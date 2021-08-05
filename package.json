@@ -3,9 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/handler.js",
+  "scripts": {
+    "start": "npm run down && npm run up && npm run build && npm run offline",
+    "restart": "npm run build && npm run offline",
+    "offline": "serverless offline",
+    "build": "tsc --newLine LF",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down --volumes --remove-orphans"
+  },
   "dependencies": {
     "@types/aws-lambda": "^8.10.81",
     "express": "^4.17.1",
+    "mariadb": "^2.5.4",
     "serverless-http": "^2.7.0"
   },
   "devDependencies": {

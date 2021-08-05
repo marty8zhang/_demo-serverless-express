@@ -3,6 +3,7 @@ app: demo-serverless-express
 service: demo-serverless-express
 
 frameworkVersion: '2'
+useDotenv: true
 
 provider:
   name: aws
