@@ -67,7 +67,7 @@ app.post('/', async (req, res, next) => {
         res.status(200).json({ message: 'Tests all passed!', requestBody: req.body });
     }
     catch (e) {
-        res.status(500).json({ message: e.message, details: e.details, databaseConfig });
+        res.status(500).json({ message: e.toString(), requestBody: req.body, databaseConfig });
     }
 });
 app.get('/', (req, res, next) => res.status(200).json({
