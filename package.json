@@ -4,7 +4,10 @@
   "description": "",
   "main": "dist/handler.js",
   "scripts": {
+    "package:staging": "serverless package --stage staging",
     "deploy:staging": "npm run build && serverless deploy --stage staging --verbose",
+    "deploy:function:staging": "npm run build && serverless deploy function --function testServerlessExpress --stage staging --verbose",
+    "remove:staging": "serverless remove --stage staging --verbose",
     "start": "npm run down && npm run up && npm run build && npm run offline",
     "restart": "npm run build && npm run offline",
     "offline": "serverless offline",

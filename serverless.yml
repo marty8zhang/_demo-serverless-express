@@ -41,5 +41,48 @@ functions:
             subnetIds:
                 - subnet-9c4492fb
 
+resources:
+    # @see https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+    Resources:
+        CognitoUserPool:
+            Type: AWS::Cognito::UserPool
+            Properties:
+                UserPoolName: ${sls:stage}_demo-serverless-express_user-pool
+                UsernameAttributes:
+                    - email
+        CognitoUserPoolDomain:
+            Type: AWS::Cognito::UserPoolDomain
+            Properties:
+                UserPoolId: !Ref CognitoUserPool
+                Domain: ${sls:stage}-demo-serverless-express
+        CognitoUserPoolResourceServer:
+            Type: AWS::Cognito::UserPoolResourceServer
+            Properties:
+                UserPoolId: !Ref CognitoUserPool
+                Identifier: !Join [ '', [ 'https://', !Ref CognitoUserPoolDomain ] ]
+                Name: ${sls:stage}_demo-serverless-express_resource-server
+                Scopes:
+                    -   ScopeName: root.read
+                        ScopeDescription: GET Hello from root.
+                    -   ScopeName: subPath.read
+                        ScopeDescription: GET Hello from sub-path.
+        CognitoUserPoolClient:
+            Type: AWS::Cognito::UserPoolClient
+            Properties:
+                UserPoolId: !Ref CognitoUserPool
+                ClientName: ${sls:stage}_demo-serverless-express_app-client
+                GenerateSecret: true
+                SupportedIdentityProviders:
+                    - COGNITO
+                ExplicitAuthFlows:
+                    - ALLOW_CUSTOM_AUTH
+                    - ALLOW_USER_SRP_AUTH
+                    - ALLOW_REFRESH_TOKEN_AUTH
+                AllowedOAuthFlows:
+                    - client_credentials
+                AllowedOAuthScopes:
+                    - !Join ['', [!Ref CognitoUserPoolResourceServer, '/root.read']]
+                    - !Join ['', [!Ref CognitoUserPoolResourceServer, '/subPath.read']]
+
 plugins:
     - serverless-offline
